@@ -115,6 +115,46 @@ TEST_F(BudgetRepoTestFixture, ValidDateFrom20190102To20190123)
     EXPECT_EQ(22, budget_repo_.queryBudget(start_data, end_data));
 }
 
+TEST_F(BudgetRepoTestFixture, StartBeforeBudgetStart)
+{
+    SetupDefaultBudge();
+
+    date::year_month_day start_data = 2018_y / 12 / 2;
+    date::year_month_day end_data = 2019_y / 1 / 23;
+
+    EXPECT_EQ(23, budget_repo_.queryBudget(start_data, end_data));
+}
+
+TEST_F(BudgetRepoTestFixture, EndBeforeBudgetStart)
+{
+    SetupDefaultBudge();
+
+    date::year_month_day start_data = 2018_y / 12 / 2;
+    date::year_month_day end_data = 2018_y / 12 / 23;
+
+    EXPECT_EQ(0, budget_repo_.queryBudget(start_data, end_data));
+}
+
+TEST_F(BudgetRepoTestFixture, EndAfterBudgetEnd)
+{
+    SetupDefaultBudge();
+
+    date::year_month_day start_data = 2019_y / 4 / 2;
+    date::year_month_day end_data = 2019_y / 5 / 6;
+
+    EXPECT_EQ(29, budget_repo_.queryBudget(start_data, end_data));
+}
+
+TEST_F(BudgetRepoTestFixture, StartAfterBudgetEnd)
+{
+    SetupDefaultBudge();
+
+    date::year_month_day start_data = 2019_y / 5 / 2;
+    date::year_month_day end_data = 2019_y / 5 / 6;
+
+    EXPECT_EQ(0, budget_repo_.queryBudget(start_data, end_data));
+}
+
 TEST_F(BudgetRepoTestFixture, ValidDateFrom20190102To20190223WithBudge2)
 {
     SetupDefaultBudge2();
