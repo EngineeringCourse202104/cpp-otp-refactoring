@@ -37,16 +37,16 @@ class BudgetRepo
         int budget_amount = 0;
         for (year_month current = start.year()/start.month(); current < end.year()/end.month(); current += months(1) )
         {
-            budget_amount += getBudgetAmount(current.year(), current.month());
+            budget_amount += getDailyAmount(current/1) * DaysInMonth(current/1);
         }
 
-        int days_in_end_month = DaysInMonth(end);
-        int days_in_start_month = DaysInMonth(start);
-        budget_amount -= getBudgetAmount(start.year(), start.month()) / days_in_start_month * dateDateToIntDay((--start.day()));
-        budget_amount += getBudgetAmount(end.year(), end.month()) / days_in_end_month * dateDateToIntDay(end.day());
+        budget_amount -= getDailyAmount(start) * dateDateToIntDay((--start.day()));
+        budget_amount += getDailyAmount(end) * dateDateToIntDay(end.day());
 
         return budget_amount;
     }
+
+    int getDailyAmount(const year_month_day &start) { return getBudgetAmount(start.year(), start.month()) / DaysInMonth(start); }
 
     int &getBudgetAmount(const year &curr_year, const month &curr_month) { return map_budgets_[curr_year/curr_month/1].amount; }
 
