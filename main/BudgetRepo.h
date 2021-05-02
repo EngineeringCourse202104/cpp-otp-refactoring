@@ -23,7 +23,7 @@ class BudgetRepo
     {
         for (const auto& budget : budgets_)
         {
-            map_budgets_[budget.year_month_day.year()][budget.year_month_day.month()] = budget.amount;
+            map_budgets_[budget.year_month_day] = budget;
         }
     }
     int queryBudget(const date::year_month_day& start, const date::year_month_day& end)
@@ -66,9 +66,7 @@ class BudgetRepo
         return budget_amount;
     }
 
-    int &getBudgetAmount(const year &curr_year, const month &curr_month) { return map_budgets_[curr_year][curr_month]; }
-
-    std::vector<Budget> findAll() { return budgets_; }
+    int &getBudgetAmount(const year &curr_year, const month &curr_month) { return map_budgets_[curr_year/curr_month/1].amount; }
 
   protected:
     int dateDateToIntDay(const date::day& day)
@@ -87,7 +85,7 @@ class BudgetRepo
         // std::cout << "days_in_end_month: " << days_in_end_month << std::endl;
         return days_in_end_month;
     }
-    std::map<date::year, std::map<date::month, int>> map_budgets_;
+    std::map<date::year_month_day, Budget> map_budgets_;
     std::vector<Budget> budgets_;
 };
 
