@@ -35,20 +35,14 @@ class BudgetRepo
             return 0;
 
         int budget_amount = 0;
-        auto curr_month = start.month();
         auto curr_year = start.year();
         for (; curr_year < end.year(); ++curr_year)
         {
-            for (; curr_month < month(12); curr_month++)
-            {
-                budget_amount += getBudgetAmount(curr_year, curr_month);
-            }
-            curr_month = month(1);
         }
-        while (curr_month < end.month())
+
+        for (year_month current = start.year()/start.month(); current < end.year()/end.month(); current += months(1) )
         {
-            budget_amount += getBudgetAmount(curr_year, curr_month);
-            curr_month++;
+            budget_amount += getBudgetAmount(current.year(), current.month());
         }
 
         int days_in_end_month = DaysInMonth(end);
