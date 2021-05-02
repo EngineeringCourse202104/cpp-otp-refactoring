@@ -24,12 +24,10 @@ class BudgetRepo
         for (const auto& budget : budgets_)
         {
             map_budgets_[budget.year_month_day.year()][budget.year_month_day.month()] = budget.amount;
-            // std::cout << "map_budgets_: " << map_budgets_[2020_y][month(6)] << std::endl;
         }
     }
     int queryBudget(const date::year_month_day& start, const date::year_month_day& end)
     {
-
         if (budgets_.empty() || !start.ok() || !end.ok())
             return 0;
 
@@ -43,7 +41,7 @@ class BudgetRepo
         {
             while (curr_month <= month(12))
             {
-                budget_amount += map_budgets_[curr_year][curr_month];
+                budget_amount += getBudgetAmount(curr_year, curr_month);
                 if (curr_month == month(12))
                 {
                     break;
@@ -56,18 +54,19 @@ class BudgetRepo
         }
         while (curr_month < end.month())
         {
-            budget_amount += map_budgets_[curr_year][curr_month];
+            budget_amount += getBudgetAmount(curr_year, curr_month);
             curr_month++;
         }
 
         int days_in_end_month = DaysInMonth(end);
         int days_in_start_month = DaysInMonth(start);
-        budget_amount -=
-            map_budgets_[curr_year][start.month()] / days_in_start_month * dateDateToIntDay((--start.day()));
-        budget_amount += map_budgets_[curr_year][end.month()] / days_in_end_month * dateDateToIntDay(end.day());
+        budget_amount -= getBudgetAmount(curr_year, start.month()) / days_in_start_month * dateDateToIntDay((--start.day()));
+        budget_amount += getBudgetAmount(curr_year, end.month()) / days_in_end_month * dateDateToIntDay(end.day());
 
         return budget_amount;
     }
+
+    int &getBudgetAmount(const year &curr_year, const month &curr_month) { return map_budgets_[curr_year][curr_month]; }
 
     std::vector<Budget> findAll() { return budgets_; }
 
