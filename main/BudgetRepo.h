@@ -47,7 +47,7 @@ class BudgetRepo
 
         int days_in_end_month = DaysInMonth(end);
         int days_in_start_month = DaysInMonth(start);
-        budget_amount -= getBudgetAmount(curr_year, start.month()) / days_in_start_month * dateDateToIntDay((--start.day()));
+        budget_amount -= getBudgetAmount(start.year(), start.month()) / days_in_start_month * dateDateToIntDay((--start.day()));
         budget_amount += getBudgetAmount(curr_year, end.month()) / days_in_end_month * dateDateToIntDay(end.day());
 
         return budget_amount;

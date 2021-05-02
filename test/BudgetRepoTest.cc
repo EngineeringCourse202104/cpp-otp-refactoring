@@ -140,7 +140,7 @@ TEST_F(BudgetRepoTestFixture, EndAfterBudgetEnd)
     SetupDefaultBudge();
 
     date::year_month_day start_data = 2019_y / 4 / 2;
-    date::year_month_day end_data = 2019_y / 5 / 6;
+    date::year_month_day end_data = 2020_y / 5 / 6;
 
     EXPECT_EQ(29, budget_repo_.queryBudget(start_data, end_data));
 }
