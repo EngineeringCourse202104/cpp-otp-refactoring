@@ -39,17 +39,10 @@ class BudgetRepo
         auto curr_year = start.year();
         for (; curr_year < end.year(); ++curr_year)
         {
-            while (curr_month <= month(12))
+            for (; curr_month < month(12); curr_month++)
             {
                 budget_amount += getBudgetAmount(curr_year, curr_month);
-                if (curr_month == month(12))
-                {
-                    break;
-                }
-                curr_month++;
-                // std::cout << "curr_year: " << curr_year << ", month" << curr_month << std::endl;
             }
-            // std::cout << " out while" << std::endl;
             curr_month = month(1);
         }
         while (curr_month < end.month())
