@@ -61,11 +61,7 @@ class BudgetRepo
     }
     int DaysInMonth(const date::year_month_day& ymd)
     {
-        int days_in_end_month;
-        days_in_end_month = dateDateToIntDay((ymd.year() / ymd.month() / date::last).day());
-
-        // std::cout << "days_in_end_month: " << days_in_end_month << std::endl;
-        return days_in_end_month;
+        return (uint) (ymd.year() / ymd.month() / last).day();
     }
     std::map<date::year_month_day, Budget> map_budgets_;
     std::vector<Budget> budgets_;
