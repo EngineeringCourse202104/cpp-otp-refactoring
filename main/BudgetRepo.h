@@ -37,13 +37,20 @@ class BudgetRepo
         int budget_amount = 0;
         for (year_month current = start.year()/start.month(); current < end.year()/end.month(); current += months(1) )
         {
+            if (current.year() == start.year() && current.month() == start.month()) {
+                budget_amount -= getDailyAmount(start) * dateDateToIntDay((--start.day()));
+            }
             budget_amount += getDailyAmount(current/1) * DaysInMonth(current/1);
         }
 
-        budget_amount -= getDailyAmount(start) * dateDateToIntDay((--start.day()));
-        budget_amount += getDailyAmount(end) * dateDateToIntDay(end.day());
+        budget_amount += getDailyAmount(end) * getOverlappingDayCount(start, end, end.year()/end.month());
 
         return budget_amount;
+    }
+
+    int getOverlappingDayCount(const year_month_day& start, const year_month_day& end, const year_month& budgetMonth) {
+        auto overlappingStart = max(start, budgetMonth / 1);
+        return (end.day() - overlappingStart.day()).count() + 1;
     }
 
     int getDailyAmount(const year_month_day &start) { return getBudgetAmount(start.year(), start.month()) / DaysInMonth(start); }
