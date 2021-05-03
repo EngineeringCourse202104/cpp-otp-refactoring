@@ -6,13 +6,29 @@
 
 #include "date.h"
 
-struct Budget {
-    date::year_month_day year_month_day{};
-    int amount{0};
-};
-
 using namespace date;
 using namespace std;
+
+struct Budget {
+    year_month_day month{};
+    int amount{0};
+
+    uint getOverlappingAmount(const year_month_day &start, const year_month_day &end) const {
+        return amount * getOverlappingDayCount(start, end) /
+               static_cast<uint>((month.year() / month.month() / last).day());
+    }
+
+private:
+    int getOverlappingDayCount(const year_month_day &start, const year_month_day &end) const {
+        auto overlappingStart = max(start, month);
+        auto overlappingEnd = min(end, static_cast<year_month_day>(month.year() / month.month() / last));
+        if (overlappingStart > overlappingEnd) {
+            return 0;
+        }
+        return (overlappingEnd.day() - overlappingStart.day()).count() + 1;
+    }
+
+};
 
 class BudgetRepo {
 private:
@@ -30,29 +46,13 @@ public:
         int budget_amount = 0;
 
         for (const auto &budget : budgets_) {
-            budget_amount += getOverlappingAmount(start, end, budget);
+            budget_amount += budget.getOverlappingAmount(start, end);
         }
 
         return budget_amount;
     }
 
-    uint getOverlappingAmount(const year_month_day &start, const year_month_day &end, const Budget &budget) {
-        return budget.amount /
-               static_cast<uint>((budget.year_month_day.year() / budget.year_month_day.month() / last).day()) *
-               getOverlappingDayCount(start, end,
-                                      budget.year_month_day.year() / budget.year_month_day.month());
-    }
-
 private:
-    int getOverlappingDayCount(const year_month_day &start, const year_month_day &end, const year_month &budgetMonth) {
-        auto overlappingStart = max(start, budgetMonth / 1);
-        auto overlappingEnd = min(end, static_cast<year_month_day>(budgetMonth / last));
-        if (overlappingStart > overlappingEnd) {
-            return 0;
-        }
-        return (overlappingEnd.day() - overlappingStart.day()).count() + 1;
-    }
-
     std::vector<Budget> budgets_;
 };
 
