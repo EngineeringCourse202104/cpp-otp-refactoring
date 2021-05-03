@@ -3,6 +3,7 @@
 
 #include <map>
 #include <sstream>
+#include <numeric>
 
 #include "date.h"
 
@@ -31,8 +32,6 @@ private:
 };
 
 class BudgetRepo {
-private:
-    /* data */
 public:
     BudgetRepo() {};
 
@@ -43,13 +42,9 @@ public:
         if (!start.ok() || !end.ok())
             return 0;
 
-        int budget_amount = 0;
-
-        for (const auto &budget : budgets_) {
-            budget_amount += budget.getOverlappingAmount(start, end);
-        }
-
-        return budget_amount;
+        return std::accumulate(budgets_.begin(), budgets_.end(), 0, [&](int amount, const Budget &budget) {
+            return amount + budget.getOverlappingAmount(start, end);
+        });
     }
 
 private:
