@@ -27,10 +27,7 @@ public:
     }
 
     int queryBudget(const date::year_month_day &start, const date::year_month_day &end) {
-        if (budgets_.empty() || !start.ok() || !end.ok())
-            return 0;
-
-        if (end < start)
+        if (!start.ok() || !end.ok())
             return 0;
 
         int budget_amount = 0;
@@ -43,6 +40,7 @@ public:
         return budget_amount;
     }
 
+private:
     int getOverlappingDayCount(const year_month_day &start, const year_month_day &end, const year_month &budgetMonth) {
         auto overlappingStart = max(start, budgetMonth / 1);
         auto overlappingEnd = min(end, static_cast<year_month_day>(budgetMonth / last));
@@ -58,15 +56,6 @@ public:
 
     int &getBudgetAmount(const year &curr_year, const month &curr_month) {
         return map_budgets_[curr_year / curr_month / 1].amount;
-    }
-
-protected:
-    int dateDateToIntDay(const date::day &day) {
-        int ret = 0;
-        stringstream geek;
-        geek << day;
-        geek >> ret;
-        return ret;
     }
 
     int DaysInMonth(const date::year_month_day &ymd) {
