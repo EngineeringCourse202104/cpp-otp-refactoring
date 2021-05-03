@@ -30,14 +30,17 @@ public:
         int budget_amount = 0;
 
         for (const auto &budget : budgets_) {
-            budget_amount +=
-                    budget.amount /
-                    DaysInMonth(budget.year_month_day.year() / budget.year_month_day.month() / 1) *
-                    getOverlappingDayCount(start, end,
-                                           budget.year_month_day.year() / budget.year_month_day.month());
+            budget_amount += getOverlappingAmount(start, end, budget);
         }
 
         return budget_amount;
+    }
+
+    uint getOverlappingAmount(const year_month_day &start, const year_month_day &end, const Budget &budget) {
+        return budget.amount /
+               static_cast<uint>((budget.year_month_day.year() / budget.year_month_day.month() / last).day()) *
+               getOverlappingDayCount(start, end,
+                                      budget.year_month_day.year() / budget.year_month_day.month());
     }
 
 private:
@@ -48,10 +51,6 @@ private:
             return 0;
         }
         return (overlappingEnd.day() - overlappingStart.day()).count() + 1;
-    }
-
-    int DaysInMonth(const date::year_month_day &ymd) {
-        return (uint) (ymd.year() / ymd.month() / last).day();
     }
 
     std::vector<Budget> budgets_;
